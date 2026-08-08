@@ -1,0 +1,34 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "rspack build",
+    "dev": "rspack dev",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "preview": "rspack preview"
+  },
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@rspack/cli": "^2.1.8",
+    "@rspack/core": "^2.1.8",
+    "@rspack/dev-server": "^2.1.0",
+    "@rspack/plugin-react-refresh": "^2.0.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "eslint": "^10.4.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "prettier": "^3.8.3",
+    "react-refresh": "^0.18.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.4"
+  }
+}
