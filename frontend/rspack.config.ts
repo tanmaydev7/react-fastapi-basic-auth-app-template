@@ -61,4 +61,7 @@ export default defineConfig({
     }),
     isDev && new ReactRefreshRspackPlugin(),
   ],
+  devServer: {
+    historyApiFallback: true,
+  },
 });

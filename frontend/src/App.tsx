@@ -1,20 +1,18 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import './App.css';
-import { Button } from "@/components/ui/button"
+import { Navigate, Route, Routes } from "react-router-dom"
+
+import { LandingPage } from "./pages/LandingPage"
+import { LoginPage } from "./pages/LoginPage"
+import { SignupPage } from "./pages/SignupPage"
 
 function App() {
-
   return (
-  <div className="flex min-h-screen items-center justify-center">
-      <h1 className="text-4xl font-bold text-red-500">
-        Rspack + React + Tailwind
-      </h1>
-        <Button>
-          TEST
-        </Button>
-    </div>
-  );
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignupPage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  )
 }
 
-export default App;
+export default App
