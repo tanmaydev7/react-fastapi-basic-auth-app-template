@@ -4,8 +4,8 @@ import { FOOTER_COLUMNS } from "@/src/constants/layout"
 function SiteFooter() {
   return (
     <footer className="border-t border-hairline bg-canvas">
-      <div className="mx-auto grid max-w-[1280px] gap-10 px-8 py-[72px] md:grid-cols-[1.4fr_repeat(3,1fr)]">
-        <div className="space-y-3">
+      <div className="page-gutter section-y mx-auto grid max-w-[1280px] gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
+        <div className="space-y-3 sm:col-span-2 lg:col-span-1">
           <Wordmark />
           <p className="max-w-xs text-sm tracking-[-0.03em] text-text-muted">
             One living workspace for the work about work.
@@ -22,7 +22,7 @@ function SiteFooter() {
                 <li key={link}>
                   <a
                     href={`#${link.toLowerCase()}`}
-                    className="text-sm tracking-[-0.03em] text-text-muted transition-colors hover:text-ink"
+                    className="inline-flex min-h-10 items-center text-sm tracking-[-0.03em] text-text-muted transition-colors hover:text-ink sm:min-h-0"
                   >
                     {link}
                   </a>

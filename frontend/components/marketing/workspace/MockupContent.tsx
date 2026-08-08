@@ -4,13 +4,15 @@ import { StatusChip } from "@/components/ui/status-chip"
 
 function MockupContent() {
   return (
-    <div className="min-w-0 flex-1 p-4 sm:p-5">
+    <div className="min-w-0 flex-1 p-3 sm:p-4 md:p-5">
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="text-lg font-semibold tracking-[-0.03em] text-ink">
+        <h3 className="text-base font-semibold tracking-[-0.03em] text-ink sm:text-lg">
           Project brief
         </h3>
         <StatusChip tone="blue">Synced</StatusChip>
-        <ReactionChip>👀 Done reading 5</ReactionChip>
+        <ReactionChip className="hidden sm:inline-flex">
+          👀 Done reading 5
+        </ReactionChip>
       </div>
 
       <p className="mt-3 max-w-xl text-sm tracking-[-0.03em] text-text-muted">
@@ -22,9 +24,29 @@ function MockupContent() {
         <ReactionChip variant="amber">Option 1</ReactionChip>
         <ReactionChip variant="amber">Option 2</ReactionChip>
         <StatusChip tone="yellow">Due Fri</StatusChip>
+        <ReactionChip className="sm:hidden">👀 5</ReactionChip>
       </div>
 
-      <div className="mt-5 overflow-hidden rounded-lg border border-hairline">
+      <div className="mt-5 space-y-2 sm:hidden">
+        {MOCKUP_ROWS.map((row) => (
+          <div
+            key={row.item}
+            className="rounded-md border border-hairline px-3 py-2.5"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-sm font-semibold tracking-[-0.03em] text-ink">
+                {row.item}
+              </p>
+              <StatusChip tone={row.status.tone}>{row.status.label}</StatusChip>
+            </div>
+            <p className="mt-1 text-sm tracking-[-0.03em] text-text-muted">
+              {row.owner}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-5 hidden overflow-hidden rounded-lg border border-hairline sm:block">
         <div className="grid grid-cols-[1.4fr_0.7fr_0.9fr] gap-2 border-b border-hairline bg-hero-canvas px-3 py-2 text-micro text-text-soft">
           <span>Item</span>
           <span>Owner</span>

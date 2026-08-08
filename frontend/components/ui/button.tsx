@@ -23,7 +23,7 @@ const buttonVariants = cva(
         default: "h-10 px-5 py-2",
         nav: "h-10 px-3 py-2",
         sm: "h-9 px-3 py-2",
-        wide: "h-10 px-5 py-2 min-w-[10.5rem]",
+        wide: "h-11 px-5 py-2 sm:h-10 sm:min-w-[10.5rem]",
       },
     },
     defaultVariants: {

@@ -12,23 +12,25 @@ function TopNav() {
 
   return (
     <header className="sticky top-0 z-40 bg-hero-canvas/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-16 max-w-[1280px] items-center justify-between px-8">
-        <div className="flex items-center gap-8">
-          <Wordmark />
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Primary">
-            {NAV_LINKS.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                className="rounded-md px-3 py-2 text-nav text-ink transition-colors hover:bg-ink/5"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-        </div>
+      <div className="page-gutter mx-auto flex h-14 max-w-[1280px] items-center justify-between md:h-16">
+        <Wordmark />
 
-        <div className="hidden items-center gap-2 md:flex">
+        <nav
+          className="hidden items-center gap-1 lg:flex"
+          aria-label="Primary"
+        >
+          {NAV_LINKS.map((link) => (
+            <a
+              key={link.label}
+              href={link.href}
+              className="rounded-md px-3 py-2 text-nav text-ink transition-colors hover:bg-ink/5"
+            >
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
+        <div className="hidden items-center gap-2 lg:flex">
           <Button
             variant="secondary"
             size="nav"
@@ -49,7 +51,7 @@ function TopNav() {
 
         <button
           type="button"
-          className="inline-flex size-10 items-center justify-center rounded-md text-ink md:hidden"
+          className="inline-flex size-11 items-center justify-center rounded-md text-ink lg:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           aria-label={open ? "Close menu" : "Open menu"}
@@ -62,25 +64,26 @@ function TopNav() {
       <div
         id="mobile-nav"
         className={cn(
-          "border-t border-hairline px-8 py-4 md:hidden",
+          "page-gutter border-t border-hairline py-3 lg:hidden",
           open ? "block" : "hidden"
         )}
       >
-        <nav className="flex flex-col gap-1" aria-label="Mobile">
+        <nav className="flex flex-col" aria-label="Mobile">
           {NAV_LINKS.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="rounded-md px-3 py-2 text-nav text-ink"
+              className="rounded-md px-3 py-3 text-base tracking-[-0.03em] text-ink"
               onClick={() => setOpen(false)}
             >
               {link.label}
             </a>
           ))}
         </nav>
-        <div className="mt-4 flex flex-col gap-2">
+        <div className="mt-3 flex flex-col gap-2 pb-2">
           <Button
             variant="secondary"
+            className="w-full"
             nativeButton={false}
             render={<Link to="/login" />}
           >
@@ -88,6 +91,7 @@ function TopNav() {
           </Button>
           <Button
             variant="deep"
+            className="w-full"
             nativeButton={false}
             render={<Link to="/signup" />}
           >
