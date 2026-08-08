@@ -5,6 +5,8 @@
 ![React 19](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?logo=typescript&logoColor=white)
 ![Rspack](https://img.shields.io/badge/Rspack-2-FF5A5F?logo=rspack&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38BDF8?logo=tailwindcss&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-7-CA4245?logo=reactrouter&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.141-009688?logo=fastapi&logoColor=white)
 ![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)
 ![uv](https://img.shields.io/badge/uv-managed-DE5FE9?logo=uv&logoColor=white)
@@ -18,10 +20,10 @@ Every new side project burns its first week on the same undifferentiated work: w
 This repository is my answer to that. It is a **template, not a product**. The contract is:
 
 1. `git clone` this repo.
-2. Restyle the landing page for the new idea.
+2. Restyle the sample marketing/auth surfaces for the new idea.
 3. Build the authenticated product surface — the actual differentiated work.
 
-Auth, build tooling, typing, and linting are already decided so they never have to be decided again.
+Auth design, build tooling, typing, linting, and a mobile-first landing + login/signup shell are already decided so they never have to be decided again.
 
 ---
 
@@ -32,10 +34,12 @@ This is an in-progress template and the README tracks reality rather than intent
 | Area | Status | Notes |
 | --- | --- | --- |
 | Frontend build pipeline | ✅ Done | Rspack 2 + SWC, React Fast Refresh, TS 6, ESLint 10, Prettier |
+| UI foundation | ✅ Done | Tailwind CSS 4, shadcn/Base UI primitives, Coda-inspired design tokens |
+| Sample marketing + auth UI | ✅ Done | Fold landing (`/`), login (`/login`), signup (`/signup`) — sample forms only |
+| Routing | ✅ Done | React Router 7, SPA history fallback in Rspack |
 | Backend service skeleton | ✅ Done | FastAPI app, `uv`-managed deps, lockfile committed |
-| Landing page | 🚧 In progress | Currently the stock starter view in `frontend/src/App.tsx` |
 | Auth — backend | 📋 Planned | Design settled (see below); implementation not started |
-| Auth — frontend | 📋 Planned | Auth context, guarded routes, token refresh |
+| Auth — frontend | 📋 Planned | Auth context, guarded routes, token refresh; wire forms to API |
 | Persistence layer | 📋 Planned | Postgres + SQLAlchemy 2.0 + Alembic |
 | Test suites | 📋 Planned | pytest + httpx on the backend, Vitest + RTL on the frontend |
 | Containerisation & CI | 📋 Planned | Docker Compose for local parity, GitHub Actions for lint/test |
@@ -52,6 +56,8 @@ Anyone can list dependencies. The reason each one is here matters more.
 | **SWC** over Babel | Transpilation happens in Rust inside the bundler — no separate JS-based transform pass in the hot path. |
 | **React 19** | Current major, so the template doesn't ship a migration debt to its own clones. |
 | **TypeScript** end to end on the client | The auth layer is where silent shape mismatches hurt most; types are non-negotiable there. |
+| **React Router 7** | Explicit client routes for marketing vs auth surfaces without pulling in a full meta-framework. |
+| **Tailwind CSS 4 + shadcn** | Utility-first styling with a small set of accessible primitives (`Button`, `Input`) instead of reinventing focus rings and variants. |
 | **FastAPI** over Flask/Django | Native async, Pydantic validation at the boundary, and OpenAPI generated from the same type hints that enforce runtime validation — one source of truth for docs, validation, and the client contract. |
 | **uv** over pip/Poetry | Fast resolution and a committed `uv.lock`, so every clone of this template resolves to byte-identical dependencies. |
 | **Separate `frontend/` and `backend/`** | Independent deploy targets and independent dependency graphs. The frontend can go to any static host, the API anywhere that runs Python — without splitting the repo. |
@@ -63,7 +69,7 @@ Anyone can list dependencies. The reason each one is here matters more.
 ```mermaid
 flowchart LR
     subgraph Client["Browser"]
-        UI["React 19 + TypeScript<br/>bundled by Rspack"]
+        UI["React 19 + TypeScript<br/>Rspack · React Router · Tailwind"]
     end
 
     subgraph Server["API"]
@@ -78,6 +84,16 @@ flowchart LR
 ```
 
 The boundary between client and server is a plain JSON API. There is no server-rendered coupling, which keeps the two halves independently replaceable — swap React for anything else and the API is untouched.
+
+### Frontend routes (current)
+
+| Path | Surface |
+| --- | --- |
+| `/` | Sample landing page (Fold) |
+| `/login` | Sample login form |
+| `/signup` | Sample signup form |
+
+Forms are UI-only samples until the auth API is wired.
 
 ---
 
@@ -131,17 +147,28 @@ On the client, a single `AuthProvider` owns session state, a route guard compone
 ```
 .
 ├── backend/
-│   ├── main.py            # FastAPI application entrypoint
-│   ├── pyproject.toml     # Dependencies (uv / PEP 621)
-│   └── uv.lock            # Committed lockfile — reproducible installs
+│   ├── main.py                 # FastAPI application entrypoint
+│   ├── pyproject.toml          # Dependencies (uv / PEP 621)
+│   └── uv.lock                 # Committed lockfile — reproducible installs
 └── frontend/
-    ├── index.html         # HTML template consumed by Rspack
-    ├── rspack.config.ts   # Bundler config: SWC, Fast Refresh, asset rules
-    ├── eslint.config.mjs  # Flat config — TS + React Hooks rules
-    ├── tsconfig.json
+    ├── index.html
+    ├── rspack.config.ts        # SWC, Fast Refresh, SPA history fallback
+    ├── components/             # UI + layout + marketing + auth components
+    │   ├── ui/                 # Button, Input, chips, …
+    │   ├── layout/             # TopNav, SiteFooter, AuthLayout
+    │   ├── marketing/          # Hero, mockup, CTA, …
+    │   ├── auth/               # LoginForm, SignupForm, AuthField
+    │   └── brand/              # Wordmark
+    ├── lib/utils.ts
     └── src/
-        ├── main.tsx       # React root
-        └── App.tsx        # Landing page — the intended customisation point
+        ├── main.tsx            # React root + BrowserRouter
+        ├── App.tsx             # Route table
+        ├── index.css           # Design tokens + Tailwind
+        ├── constants/          # Domain content (layout, marketing, workspace)
+        │   ├── layout.ts
+        │   ├── marketing.ts
+        │   └── workspace.ts
+        └── pages/              # LandingPage, LoginPage, SignupPage
 ```
 
 ---
@@ -168,6 +195,8 @@ npm install
 npm run dev                  # http://localhost:8080
 ```
 
+Open `/`, `/login`, and `/signup` to walk the sample surfaces.
+
 ### Everyday commands
 
 | Command | Location | Purpose |
@@ -185,9 +214,10 @@ npm run dev                  # http://localhost:8080
 ## Using this as a template
 
 1. Clone it and re-point the remote at the new project.
-2. Rewrite `frontend/src/App.tsx` and `App.css` — this is deliberately the only thing that must change to rebrand.
-3. Add feature routes behind the auth guard on the client, and feature routers behind the auth dependency on the API.
-4. Everything else — build config, linting, dependency management, session handling — is intended to be inherited untouched.
+2. Rebrand the sample UI: tokens in `frontend/src/index.css`, copy in `frontend/src/constants/`, and the page/component tree under `frontend/src/pages/` + `frontend/components/`.
+3. Keep the route shape (`/`, `/login`, `/signup`) or extend it — then wire the auth forms to the FastAPI endpoints once they exist.
+4. Add feature routes behind the auth guard on the client, and feature routers behind the auth dependency on the API.
+5. Everything else — build config, linting, dependency management, session design — is intended to be inherited untouched.
 
 ---
 
@@ -195,11 +225,13 @@ npm run dev                  # http://localhost:8080
 
 - [x] Frontend toolchain: Rspack + SWC + TypeScript + ESLint + Prettier
 - [x] FastAPI service skeleton with reproducible `uv` environment
-- [ ] Designed landing page replacing the starter view
+- [x] Tailwind CSS 4 + shadcn/Base UI primitives
+- [x] Mobile-first sample landing page + login/signup (React Router)
 - [ ] Postgres + SQLAlchemy 2.0 models and Alembic migrations
 - [ ] Auth endpoints: register, login, refresh, logout
 - [ ] Argon2id hashing and JWT issuance/verification
 - [ ] `AuthProvider`, guarded routes, transparent token refresh
+- [ ] Wire sample login/signup forms to the API
 - [ ] Backend tests (pytest + httpx) and frontend tests (Vitest + RTL)
 - [ ] Docker Compose for local parity
 - [ ] GitHub Actions running lint, type-check, and tests on every push
@@ -214,4 +246,5 @@ A few decisions worth stating explicitly, since a template propagates them into 
 - **The refresh token is never readable by JavaScript.** Storing session credentials in `localStorage` is convenient and turns any XSS into full account takeover; the `HttpOnly` cookie is the whole point.
 - **Validation lives at the boundary.** Pydantic models sit at the edge of the API so untrusted input is shaped and rejected before it reaches any business logic.
 - **The two halves stay decoupled.** No shared build step, no server-rendered templates — either side can be rewritten or redeployed alone.
+- **UI content lives in `src/constants/` by domain.** Presentational components stay in `components/`; nav/footer/marketing copy is not inlined next to JSX.
 - **This README tracks what is true.** Planned work is labelled planned. A checklist that lies is worse than no checklist.
