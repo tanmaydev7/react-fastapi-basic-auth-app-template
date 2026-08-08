@@ -2,6 +2,13 @@ import { defineConfig } from '@rspack/cli';
 import { rspack, type SwcLoaderOptions } from '@rspack/core';
 import { ReactRefreshRspackPlugin } from '@rspack/plugin-react-refresh';
 
+
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const isDev = process.env.NODE_ENV === 'development';
 
 export default defineConfig({
@@ -11,6 +18,9 @@ export default defineConfig({
   target: ['browserslist:last 2 versions, > 0.2%, not dead, Firefox ESR'],
   resolve: {
     extensions: ['...', '.ts', '.tsx', '.jsx'],
+     alias: {
+      '@': path.resolve(__dirname),
+    },
   },
   module: {
     rules: [
@@ -20,7 +30,8 @@ export default defineConfig({
       },
       {
         test: /\.css$/,
-        type: 'css/auto',
+        use: ['postcss-loader'],
+        type: 'css',
       },
       {
         test: /\.(?:js|jsx|mjs|cjs|ts|tsx|mts|cts)$/,
