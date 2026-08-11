@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "codebase-documenter": {
+      "source": "ailabs-393/ai-labs-claude-skills",
+      "sourceType": "github",
+      "skillPath": "packages/skills/codebase-documenter/SKILL.md",
+      "computedHash": "6b62f6146fa67d84a9459419127c5a55507a29e25f4987ef4cb2fe79889713a6"
+    },
     "ponytail": {
       "source": "dietrichgebert/ponytail",
       "sourceType": "github",
