@@ -7,6 +7,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
+from app.auth import ACCESS_COOKIE, COOKIE_PATH, REFRESH_COOKIE
 from app.config import Settings, get_settings
 from app.db import get_db
 from app.models import RefreshToken, User
@@ -22,33 +23,27 @@ from app.security import (
 
 router = APIRouter(prefix="/auth/v1", tags=["auth"])
 
-ACCESS_COOKIE = "access_token"
-REFRESH_COOKIE = "refresh_token"
-# Same path as access so both survive SPA reloads / DevTools views for `/app`.
-# (Path=/auth/v1 made refresh look "gone" on document requests and confused the jar.)
-COOKIE_PATH = "/"
+
+def _cookie_flags(settings: Settings) -> dict:
+    return {
+        "httponly": True,
+        "secure": settings.cookie_secure,
+        "samesite": "lax",
+        "path": COOKIE_PATH,
+    }
 
 
 def _set_access_cookie(response: Response, token: str, settings: Settings) -> None:
     response.set_cookie(
         key=ACCESS_COOKIE,
         value=token,
-        httponly=True,
-        secure=settings.cookie_secure,
-        samesite="lax",
-        path=COOKIE_PATH,
         max_age=settings.access_token_minutes * 60,
+        **_cookie_flags(settings),
     )
 
 
 def _clear_access_cookie(response: Response, settings: Settings) -> None:
-    response.delete_cookie(
-        key=ACCESS_COOKIE,
-        path=COOKIE_PATH,
-        httponly=True,
-        secure=settings.cookie_secure,
-        samesite="lax",
-    )
+    response.delete_cookie(key=ACCESS_COOKIE, **_cookie_flags(settings))
 
 
 def _set_refresh_cookie(response: Response, token: str, settings: Settings) -> None:
@@ -63,22 +58,13 @@ def _set_refresh_cookie(response: Response, token: str, settings: Settings) -> N
     response.set_cookie(
         key=REFRESH_COOKIE,
         value=token,
-        httponly=True,
-        secure=settings.cookie_secure,
-        samesite="lax",
-        path=COOKIE_PATH,
         max_age=settings.refresh_token_days * 24 * 60 * 60,
+        **_cookie_flags(settings),
     )
 
 
 def _clear_refresh_cookie(response: Response, settings: Settings) -> None:
-    response.delete_cookie(
-        key=REFRESH_COOKIE,
-        path=COOKIE_PATH,
-        httponly=True,
-        secure=settings.cookie_secure,
-        samesite="lax",
-    )
+    response.delete_cookie(key=REFRESH_COOKIE, **_cookie_flags(settings))
     response.delete_cookie(
         key=REFRESH_COOKIE,
         path="/auth/v1",

@@ -2,11 +2,11 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 
+from app.auth import ACCESS_COOKIE
 from app.security import decode_access_token
 
 # ponytail: prefix list; per-route rules if public /api/v1 routes appear
 PROTECTED_PREFIXES = ("/api/v1",)
-ACCESS_COOKIE = "access_token"
 
 
 class AuthMiddleware(BaseHTTPMiddleware):

@@ -7,6 +7,12 @@ from starlette.requests import Request
 
 from app.models import User
 
+ACCESS_COOKIE = "access_token"
+REFRESH_COOKIE = "refresh_token"
+# Same path as access so both survive SPA reloads / DevTools views for `/app`.
+# (Path=/auth/v1 made refresh look "gone" on document requests and confused the jar.)
+COOKIE_PATH = "/"
+
 
 async def load_user(request: Request, db: AsyncSession) -> User:
     user_id: uuid.UUID | None = getattr(request.state, "user_id", None)

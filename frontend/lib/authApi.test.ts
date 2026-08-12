@@ -2,43 +2,8 @@ import { AxiosError, type InternalAxiosRequestConfig } from "axios"
 import { beforeEach, describe, expect, it } from "vitest"
 
 import { api } from "@/lib/api"
-import { bootstrapAuth, restoreSession } from "@/lib/authApi"
+import { restoreSession } from "@/lib/authApi"
 import { useAuthStore } from "@/src/stores/authStore"
-
-describe("bootstrapAuth", () => {
-  beforeEach(() => {
-    useAuthStore.setState({
-      user: null,
-      status: "loading",
-    })
-  })
-
-  it("marks anonymous without calling the network", async () => {
-    const urls: string[] = []
-
-    api.defaults.adapter = async (config: InternalAxiosRequestConfig) => {
-      urls.push(config.url ?? "")
-      throw new AxiosError(
-        "Unauthorized",
-        "ERR_BAD_REQUEST",
-        config,
-        null,
-        {
-          data: null,
-          status: 401,
-          statusText: "Unauthorized",
-          headers: {},
-          config,
-        }
-      )
-    }
-
-    await bootstrapAuth()
-
-    expect(urls).toEqual([])
-    expect(useAuthStore.getState().status).toBe("anonymous")
-  })
-})
 
 describe("restoreSession", () => {
   beforeEach(() => {

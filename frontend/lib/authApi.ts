@@ -47,15 +47,6 @@ export async function logout(): Promise<void> {
   useAuthStore.getState().clearSession()
 }
 
-export async function me(): Promise<AuthUser> {
-  const { data } = await api.get<AuthUser>("/api/v1/me")
-  return data
-}
-
-export async function bootstrapAuth(): Promise<void> {
-  useAuthStore.getState().clearSession()
-}
-
 /** Call on protected routes; 401 → interceptor refresh if cookie exists. */
 let restorePromise: Promise<boolean> | null = null
 
@@ -64,8 +55,7 @@ export async function restoreSession(): Promise<boolean> {
 
   restorePromise = (async () => {
     try {
-      const user = await me()
-      useAuthStore.getState().setSession({ user })
+      await applySession()
       return true
     } catch {
       useAuthStore.getState().clearSession()

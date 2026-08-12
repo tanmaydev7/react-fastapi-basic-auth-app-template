@@ -14,7 +14,6 @@ function RequireAuth({ children }: { children: ReactNode }) {
       setChecked(true)
       return
     }
-    if (status === "loading") return
 
     let cancelled = false
     void restoreSession().finally(() => {
@@ -25,7 +24,7 @@ function RequireAuth({ children }: { children: ReactNode }) {
     }
   }, [status])
 
-  if (status === "loading" || !checked) {
+  if (!checked) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-canvas text-sm text-text-muted">
         Checking session…

@@ -7,22 +7,18 @@ export type AuthUser = {
   created_at: string
 }
 
-type AuthStatus = "loading" | "authenticated" | "anonymous"
+type AuthStatus = "authenticated" | "anonymous"
 
 type AuthState = {
   user: AuthUser | null
   status: AuthStatus
   setSession: (session: { user: AuthUser }) => void
-  setUser: (user: AuthUser) => void
   clearSession: () => void
-  setStatus: (status: AuthStatus) => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
-  status: "loading",
+  status: "anonymous",
   setSession: ({ user }) => set({ user, status: "authenticated" }),
-  setUser: (user) => set({ user }),
   clearSession: () => set({ user: null, status: "anonymous" }),
-  setStatus: (status) => set({ status }),
 }))
