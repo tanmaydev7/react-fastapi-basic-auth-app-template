@@ -9,8 +9,9 @@ function RequireAuth({ children }: { children: ReactNode }) {
   const location = useLocation()
   const [checked, setChecked] = useState(status === "authenticated")
 
+  // Mount only — re-running on logout (authenticated→anonymous) was firing /me+/refresh.
   useEffect(() => {
-    if (status === "authenticated") {
+    if (useAuthStore.getState().status === "authenticated") {
       setChecked(true)
       return
     }
@@ -22,7 +23,7 @@ function RequireAuth({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-  }, [status])
+  }, [])
 
   if (!checked) {
     return (

@@ -1,6 +1,6 @@
 import axios, { type AxiosError, type InternalAxiosRequestConfig } from "axios"
 
-import { useAuthStore } from "@/src/stores/authStore"
+import { hasSessionHint, useAuthStore } from "@/src/stores/authStore"
 
 type RetryConfig = InternalAxiosRequestConfig & { _retry?: boolean }
 
@@ -40,7 +40,8 @@ api.interceptors.response.use(
       error.response?.status !== 401 ||
       !original ||
       original._retry ||
-      url.includes("/auth/v1/")
+      url.includes("/auth/v1/") ||
+      !hasSessionHint()
     ) {
       return Promise.reject(error)
     }

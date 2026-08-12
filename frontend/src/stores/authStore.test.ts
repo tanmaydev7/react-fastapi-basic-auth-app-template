@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest"
 
-import { useAuthStore } from "./authStore"
+import { SESSION_HINT_KEY, useAuthStore } from "./authStore"
 
 describe("authStore", () => {
   beforeEach(() => {
@@ -32,10 +32,12 @@ describe("authStore", () => {
       },
       status: "authenticated",
     })
+    localStorage.setItem(SESSION_HINT_KEY, "1")
 
     useAuthStore.getState().clearSession()
 
     expect(useAuthStore.getState().user).toBeNull()
     expect(useAuthStore.getState().status).toBe("anonymous")
+    expect(localStorage.getItem(SESSION_HINT_KEY)).toBeNull()
   })
 })

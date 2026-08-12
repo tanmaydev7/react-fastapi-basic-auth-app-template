@@ -47,7 +47,7 @@ export async function logout(): Promise<void> {
   useAuthStore.getState().clearSession()
 }
 
-/** Call on protected routes; 401 → interceptor refresh if cookie exists. */
+/** Call on protected routes; 401 → interceptor refresh only if session hint is set. */
 let restorePromise: Promise<boolean> | null = null
 
 export async function restoreSession(): Promise<boolean> {
