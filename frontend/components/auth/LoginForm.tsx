@@ -1,16 +1,29 @@
 import { useState, type FormEvent } from "react"
+import { useNavigate } from "react-router-dom"
 
 import { AuthField } from "@/components/auth/AuthField"
 import { Button } from "@/components/ui/button"
+import { login } from "@/lib/authApi"
 
 function LoginForm() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [pending, setPending] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setSubmitted(true)
+    setError(null)
+    setPending(true)
+    try {
+      await login({ email, password })
+      navigate("/app", { replace: true })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login failed")
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -44,13 +57,13 @@ function LoginForm() {
         }
       />
 
-      <Button type="submit" variant="primary" className="mt-2 w-full">
-        Log in
+      <Button type="submit" variant="primary" className="mt-2 w-full" disabled={pending}>
+        {pending ? "Logging in…" : "Log in"}
       </Button>
 
-      {submitted ? (
-        <p className="rounded-md border border-hairline bg-canvas px-3 py-2 text-sm tracking-[-0.03em] text-text-muted">
-          Sample form only — wire this to your FastAPI auth next.
+      {error ? (
+        <p className="rounded-md border border-hairline bg-canvas px-3 py-2 text-sm tracking-[-0.03em] text-red-700">
+          {error}
         </p>
       ) : null}
     </form>

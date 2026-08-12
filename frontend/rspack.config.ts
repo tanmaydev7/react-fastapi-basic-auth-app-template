@@ -1,7 +1,7 @@
 import { defineConfig } from '@rspack/cli';
 import { rspack, type SwcLoaderOptions } from '@rspack/core';
 import { ReactRefreshRspackPlugin } from '@rspack/plugin-react-refresh';
-
+import Dotenv from 'dotenv-webpack';
 
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -58,6 +58,10 @@ export default defineConfig({
   plugins: [
     new rspack.HtmlRspackPlugin({
       template: './index.html',
+    }),
+    new Dotenv({
+      path: './.env',
+      safe: true,
     }),
     isDev && new ReactRefreshRspackPlugin(),
   ],
